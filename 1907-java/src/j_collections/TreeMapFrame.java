@@ -89,7 +89,7 @@ public class TreeMapFrame extends JInternalFrame {
 				textArea.append(tey.getKey()+ " " + tey.getValue() + "\n");
 			}
 		}else {
-			textArea.setText("실행버튼먼저 눌러주세요");
+			textArea.setText("실행버튼먼저 눌러주세요!!!");
 		}
 	}
 	
