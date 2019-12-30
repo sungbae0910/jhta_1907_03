@@ -67,28 +67,16 @@ public class MemberModify extends JInternalFrame {
 
 	}
 	
-	public MemberModify(List<MemberVo> ls) {
-		this();
-		this.ls = ls;
-	}
-	
-	//강사님 코드
 	public void search() {
 		pwd.setText("");
 		mName.setText("");
 		phone.setText("");
 		index = -1;
 		String find = mId.getText();
-		for(int i=0; i<ls.size(); i++) {
-			MemberVo mv = ls.get(i);
-			if(mv.getmId().equals(find)) {
-				index = i;
-				break;
-			}
-		}
+		MemberDao dao = new MemberDao();
+		MemberVo mv = dao.search(find);
 		
-		if(index>=0) {
-			MemberVo mv = ls.get(index);
+		if(mv != null) {
 			pwd.setText(mv.getPwd());
 			mName.setText(mv.getmName());
 			phone.setText(mv.getPhone());
@@ -102,47 +90,42 @@ public class MemberModify extends JInternalFrame {
 		}
 	}
 	
-//마이코드
-/*	public void search() { //검색
-		mId.getText();
-		for(int i=0; i<ls.size(); i++) {
-			if(mId.getText().equals(ls.get(i).getmId())) {
-				mId.setText(ls.get(i).getmId());
-				pwd.setText(ls.get(i).getPwd());
-				mName.setText(ls.get(i).getmName());
-				phone.setText(ls.get(i).getPhone());
-			}else {
-				status.setText("찾는값이 없습니다.");
-			}
-		}
-	}*/
+
 	
 	public void modify() { //수정
-		MemberVo mv = new MemberVo(mId.getText(),pwd.getText(),mName.getText(),phone.getText());
-		ls.set(index, mv);
 		mId.setText("");
 		pwd.setText("");
 		mName.setText("");
 		phone.setText("");
 		
-		status.setText("수정완료되었습니다.");
+		MemberVo mv = new MemberVo(mId.getText(),pwd.getText(),mName.getText(),phone.getText());
+		MemberDao dao = new MemberDao();
+		boolean b = dao.modify(mv);
+		if(b) {
+			status.setText("수정완료되었습니다.");
+		}else {
+			status.setText("수정 중 오류발생");
+		}
+		
 		
 	}
 	
 	public void delete() { //삭제
-		if(index>=0) {
-			ls.remove(index);
+			String findMid = mId.getText();
+			MemberDao dao = new MemberDao();
+			boolean b = dao.delete(findMid);
+			
+			if(b) {
 			mId.setText("");
 			pwd.setText("");
 			mName.setText("");
 			phone.setText("");
 			status.setText("삭제완료!!");
 			
-			index = -1;
 			mId.requestFocus();
 			mId.selectAll();
 		}else {
-			status.setText("검색먼저 해주세요!!");
+			status.setText("자료 삭제 중 오류발 생");
 		}
 	}
 	
