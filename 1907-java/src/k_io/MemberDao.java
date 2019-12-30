@@ -67,14 +67,12 @@ public class MemberDao {
 	
 	public boolean modify(MemberVo mv) {
 		boolean b = true;
-		
 		try {
 			int index = -1;
 			InputStream is = new FileInputStream(fileName);
 			ObjectInputStream ois = new ObjectInputStream(is);
 			List<MemberVo> list = (List)ois.readObject();
-			
-			for(int i =0; i< list.size(); i++) {
+			for(int i = 0; i< list.size(); i++) {
 				MemberVo vo = list.get(i);
 				if(vo.getmId().equals(mv.getmId())) {
 					list.set(i, mv);

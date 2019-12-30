@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 public class MemberModify extends JInternalFrame {
 	int index = -1;
 	List<MemberVo> ls;
-	
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JLabel lblNewLabel_2;
@@ -43,7 +42,6 @@ public class MemberModify extends JInternalFrame {
 			}
 		});
 	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -90,18 +88,16 @@ public class MemberModify extends JInternalFrame {
 		}
 	}
 	
-
-	
 	public void modify() { //수정
-		mId.setText("");
-		pwd.setText("");
-		mName.setText("");
-		phone.setText("");
 		
 		MemberVo mv = new MemberVo(mId.getText(),pwd.getText(),mName.getText(),phone.getText());
 		MemberDao dao = new MemberDao();
 		boolean b = dao.modify(mv);
 		if(b) {
+			mId.setText("");
+			pwd.setText("");
+			mName.setText("");
+			phone.setText("");
 			status.setText("수정완료되었습니다.");
 		}else {
 			status.setText("수정 중 오류발생");
@@ -109,7 +105,6 @@ public class MemberModify extends JInternalFrame {
 		
 		
 	}
-	
 	public void delete() { //삭제
 			String findMid = mId.getText();
 			MemberDao dao = new MemberDao();
