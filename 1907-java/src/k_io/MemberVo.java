@@ -2,8 +2,8 @@ package k_io;
 
 import java.io.Serializable;
 
-public class MemberVo implements Serializable{ //implements Serializable 직렬화 인터페이스이지만 따로 재정의할 메소드가 없음
-	public static long serialVersionUID = 1L; //서로 다른 컴퓨터에서 컴파일해도 번호가 같으면 동일한 컴퓨터에서 컴파일한 것으로 취급 
+public class MemberVo implements Serializable{ // implements Serializable 직렬화 할 때 사용. 인터페이스이지만 따로 재정의할 메소드가 없음
+	public static long serialVersionUID = 1L; // 서로 다른 컴퓨터에서 컴파일해도 번호가 같으면 동일한 컴퓨터에서 컴파일한 것으로 취급 
 	private String mId;
 	private String pwd;
 	private String mName;
@@ -18,11 +18,11 @@ public class MemberVo implements Serializable{ //implements Serializable 직렬화 
 
 	@Override
 	public int hashCode() {
-		return mId.hashCode()+phone.hashCode();
+		return mId.hashCode()+phone.hashCode(); // 값이 같거나 틀리더라도 해시코드 반환값이 같으면 동등객체임
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) { // 값이 같은지 체크
 		String find = (String)obj;
 		boolean result = false;
 		

@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 
 public class MemberInput extends JInternalFrame {
 
-	private List<MemberVo> ls;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JLabel lblNewLabel_2;
@@ -69,21 +68,22 @@ public class MemberInput extends JInternalFrame {
 		String ph = phone.getText();
 		
 		MemberVo mv = new MemberVo(id, p, n, ph);
-		this.ls.add(mv);
+		MemberDao dao = new MemberDao();
+		boolean r = dao.input(mv);
 		
-		pwd.setText("");
-		mName.setText("");
-		phone.setText("");
-		
-		mId.selectAll();
-		status.setText("회원정보가 추가되었습니다." + ls.size() + "건");
+		if(r) {
+			pwd.setText("");
+			mName.setText("");
+			phone.setText("");
+			
+			mId.selectAll();
+			status.setText("회원정보가 추가되었습니다.");
+		}else {
+			status.setText("회원정보 입력 중 오류 발생");
+		}
 	}
 	
-	//static을 이용하지 않으려 List<MemberVo>를 넘겨받음
-	public MemberInput(List<MemberVo> ls) {
-		this(); //기본생성자의 기능을 이용하면서 새로운 기능을 추가
-		this.ls=ls;
-	}
+
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
 			lblNewLabel = new JLabel("\uC544\uC774\uB514");

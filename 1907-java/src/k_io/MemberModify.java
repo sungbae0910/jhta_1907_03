@@ -13,9 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class MemberModify extends JInternalFrame {
-	
 	int index = -1;
 	List<MemberVo> ls;
+	
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JLabel lblNewLabel_2;
