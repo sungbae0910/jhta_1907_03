@@ -25,6 +25,8 @@ public class ClientThread extends Thread{
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
+			
+			frame.login();
 			while(true) {
 				ChattData cd = (ChattData)ois.readObject();
 				String html = "";
@@ -34,10 +36,17 @@ public class ClientThread extends Thread{
 							+ cd.toString() + "</div>";
 					frame.kit.insertHTML(frame.doc, frame.doc.getLength(), html, 0, 0, null);
 					break;
+				case ChattData.LOGIN:
+					for(int i =0; i<cd.getUsers().size(); i++) {
+						String mId = cd.getUsers().get(i);
+						frame.model.addElement(mId);
+					}
+					break;
 				}
 				frame.getTextPane().scrollRectToVisible(new Rectangle(0, frame.getTextPane().getHeight()+100, 1, 1));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

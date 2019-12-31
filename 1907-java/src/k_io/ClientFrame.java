@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -31,6 +32,7 @@ public class ClientFrame extends JFrame implements Runnable{
 	HTMLEditorKit kit = new HTMLEditorKit();
 	HTMLDocument doc = new HTMLDocument();
 	ClientThread ct;
+	DefaultListModel<String> model = new DefaultListModel<String>();
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
 	private JTextField server;
@@ -107,10 +109,8 @@ public class ClientFrame extends JFrame implements Runnable{
 			ct = new ClientThread(ClientFrame.this, socket);
 			ct.start();
 			
-			if(socket.isConnected()) {
-				login();
-			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -137,7 +137,7 @@ public class ClientFrame extends JFrame implements Runnable{
 				ct.oos.flush();
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 
@@ -158,6 +158,7 @@ public class ClientFrame extends JFrame implements Runnable{
 				InetAddress ia = InetAddress.getLocalHost();
 				server.setText(ia.getHostAddress());
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return server;
@@ -188,7 +189,7 @@ public class ClientFrame extends JFrame implements Runnable{
 	private JTextField getTmId() {
 		if (tmId == null) {
 			tmId = new JTextField();
-			tmId.setText("Lee");
+			tmId.setText("\u314B");
 			tmId.setBounds(43, 35, 121, 21);
 			tmId.setColumns(10);
 		}
@@ -242,6 +243,7 @@ public class ClientFrame extends JFrame implements Runnable{
 	private JList getList() {
 		if (list == null) {
 			list = new JList();
+			list.setModel(model);
 		}
 		return list;
 	}

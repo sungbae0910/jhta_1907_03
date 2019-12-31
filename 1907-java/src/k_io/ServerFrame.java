@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -30,6 +31,7 @@ public class ServerFrame extends JFrame implements Runnable{
 	HTMLEditorKit kit = new HTMLEditorKit();
 	HTMLDocument doc = new HTMLDocument();
 	List<ServerThread> clients = new ArrayList<ServerThread>();
+	DefaultListModel<String> model = new DefaultListModel<String>(); //JList를 활용하기 위해 선언
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
 	private JTextField textField;
@@ -133,7 +135,7 @@ public class ServerFrame extends JFrame implements Runnable{
 				InetAddress ia = InetAddress.getLocalHost();
 				textField.setText(ia.getHostAddress());
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 		return textField;
@@ -186,6 +188,8 @@ public class ServerFrame extends JFrame implements Runnable{
 	private JList getList() {
 		if (list == null) {
 			list = new JList();
+			
+			list.setModel(model); //DefaultListModel에 JList를 담는다.
 		}
 		return list;
 	}
