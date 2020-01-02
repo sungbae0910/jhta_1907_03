@@ -20,6 +20,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.awt.event.ActionEvent;
@@ -32,7 +33,7 @@ public class ClientFrame extends JFrame implements Runnable{
 	HTMLEditorKit kit = new HTMLEditorKit();
 	HTMLDocument doc = new HTMLDocument();
 	ClientThread ct;
-	DefaultListModel<String> model = new DefaultListModel<String>();
+	DefaultListModel<String> model = new DefaultListModel<String>(); //JList를 활용하기 위해 선언
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
 	private JTextField server;
@@ -108,7 +109,6 @@ public class ClientFrame extends JFrame implements Runnable{
 			socket = new Socket(id, pt);
 			ct = new ClientThread(ClientFrame.this, socket);
 			ct.start();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -123,6 +123,25 @@ public class ClientFrame extends JFrame implements Runnable{
 		ChattData cd = new ChattData(mid, cmd, msg);
 		ct.oos.writeObject(cd);
 		ct.oos.flush();
+	}
+	
+	// 서버에게 로그아웃 통보
+	// 자신의 유저목록을 모두 제거
+	// clientThread를 종료
+	public void logout() {
+		ChattData cd = new ChattData();
+		cd.setmId(tmId.getText());
+		cd.setCommand(ChattData.LOGOUT);
+		try {
+			ct.oos.writeObject(cd);
+			ct.oos.flush();
+			model.clear(); // 자신의 JList목록들 제거
+			ct.stop(); // clientThread 종료
+			socket.close();
+			socket = null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void send() {
@@ -227,6 +246,11 @@ public class ClientFrame extends JFrame implements Runnable{
 	private JButton getBtnNewButton_1() {
 		if (btnNewButton_1 == null) {
 			btnNewButton_1 = new JButton("Exit");
+			btnNewButton_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					logout();
+				}
+			});
 			btnNewButton_1.setBounds(386, 6, 58, 44);
 		}
 		return btnNewButton_1;
@@ -240,7 +264,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return scrollPane;
 	}
-	private JList getList() {
+	public JList getList() {
 		if (list == null) {
 			list = new JList();
 			list.setModel(model);

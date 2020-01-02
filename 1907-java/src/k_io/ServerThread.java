@@ -12,6 +12,7 @@ public class ServerThread extends Thread{
 	Socket socket;
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
+	String mId;
 	
 	public ServerThread(ServerFrame sf, Socket socket){
 		this.frame=sf;
@@ -29,6 +30,7 @@ public class ServerThread extends Thread{
 				String html = "";
 				switch(cd.getCommand()) {
 				case ChattData.LOGIN:
+					this.mId = cd.getmId(); // 자신과 연결된 클라이언트의 아이디를 필드에 저장
 					html = "<font color = '#a35748'>" + cd.getmId()+"가 접속하였습니다. </font>";
 					frame.kit.insertHTML(frame.doc, frame.doc.getLength(), html, 0, 0, null);
 					
@@ -45,7 +47,10 @@ public class ServerThread extends Thread{
 					//자신의 아이디를 model에 추가
 					frame.model.addElement(cd.getmId()); //로그인이 들어왔을 때 아이디 값을 model에 담아 표현해준다
 					//모든 접속자에게 현재 자신의 아이디를 전송
-					users.clear();
+					cd2 = new ChattData();
+					cd2.setCommand(ChattData.LOGIN);
+					users = new ArrayList<String>();
+					
 					users.add(cd.getmId());
 					cd2.setUsers(users);
 					sendAll(cd2);
@@ -55,11 +60,26 @@ public class ServerThread extends Thread{
 					frame.kit.insertHTML(frame.doc, frame.doc.getLength(), html, 0, 0, null);
 					sendAll(cd);
 					break;
+				case ChattData.LOGOUT:
+					html = "<font color = '#a35748'>" + cd.getmId()+"가 로그아웃하였습니다. </font>";
+					frame.kit.insertHTML(frame.doc, frame.doc.getLength(), html, 0, 0, null);
+					throw new Exception(); // logout이라는 명령어가 들어오면 x버튼을 눌렀을 때와 같은 기능을 실행하면 되기 때문에 exception으로 넘김
 				}
 				frame.getTextPane().scrollRectToVisible(new Rectangle(0, frame.getTextPane().getHeight()+100, 1, 1));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			int index = frame.clients.indexOf(ServerThread.this); // 접속종료된 클라이언트 번호를 받음
+			frame.model.remove(index); // 목록에서 삭제
+			frame.clients.remove(index); // 리스트에서 삭제
+			// 다른 유저에게 본인의 로그아웃된 사실을 통보
+			ChattData cd = new ChattData();
+			cd.setCommand(ChattData.LOGOUT);
+			cd.setmId(this.mId);
+			try {
+				sendAll(cd);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
