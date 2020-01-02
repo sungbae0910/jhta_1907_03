@@ -60,6 +60,21 @@ public class ServerThread extends Thread{
 					frame.kit.insertHTML(frame.doc, frame.doc.getLength(), html, 0, 0, null);
 					sendAll(cd);
 					break;
+				case ChattData.WHISPER: //sendAll(ChattData cd, int[] d)를 호출하기 위해 int배열을 만들어줌
+					int[] to = new int[cd.getUsers().size()];
+					int index = 0;
+					for(String str :  cd.getUsers()) {
+						for(int i=0; i<frame.clients.size(); i++) {
+							ServerThread st = frame.clients.get(i);
+							if(str.equals(st.mId)) {
+								to[index] = i;
+								index++;
+							}
+						}
+					}
+					
+					frame.sendAll(cd, to);
+					break;
 				case ChattData.LOGOUT:
 					html = "<font color = '#a35748'>" + cd.getmId()+"가 로그아웃하였습니다. </font>";
 					frame.kit.insertHTML(frame.doc, frame.doc.getLength(), html, 0, 0, null);

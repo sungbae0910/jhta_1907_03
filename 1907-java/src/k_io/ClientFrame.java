@@ -3,6 +3,8 @@ package k_io;
 import java.awt.EventQueue;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -26,6 +28,7 @@ import java.io.ObjectOutputStream;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.ScrollPaneConstants;
 
 public class ClientFrame extends JFrame implements Runnable{
 
@@ -43,8 +46,8 @@ public class ClientFrame extends JFrame implements Runnable{
 	private JTextField tmId;
 	private JLabel lblNewLabel_3;
 	private JTextField tPw;
-	private JButton btnNewButton;
-	private JButton btnNewButton_1;
+	public JButton conA;
+	public JButton exB;
 	private JScrollPane scrollPane;
 	private JList list;
 	private JLabel lblNewLabel_4;
@@ -91,14 +94,15 @@ public class ClientFrame extends JFrame implements Runnable{
 		contentPane.add(getTmId());
 		contentPane.add(getLblNewLabel_3());
 		contentPane.add(getTPw());
-		contentPane.add(getBtnNewButton());
-		contentPane.add(getBtnNewButton_1());
+		contentPane.add(getConA());
+		contentPane.add(getExB());
 		contentPane.add(getScrollPane());
 		contentPane.add(getScrollPane_1());
 		contentPane.add(getBtnNewButton_2());
 		contentPane.add(getComboBox());
 		contentPane.add(getMessage());
 		contentPane.add(getBtnNewButton_3());
+		
 	}
 	
 	@Override
@@ -109,6 +113,7 @@ public class ClientFrame extends JFrame implements Runnable{
 			socket = new Socket(id, pt);
 			ct = new ClientThread(ClientFrame.this, socket);
 			ct.start();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -150,6 +155,17 @@ public class ClientFrame extends JFrame implements Runnable{
 			String msg = message.getText();
 			int cmd = ChattData.MESSAGE;
 			ChattData cd = new ChattData(mid, cmd, msg);
+			
+			 
+			if(comboBox.getSelectedIndex()==1) { // ±Ó¼Ó¸»
+				Object[] obj = getList().getSelectedValues();
+				List<String> users = new ArrayList<String>();
+				for(Object str :  obj) {
+					users.add((String)str);
+				}
+				cd.setUsers(users);
+				cd.setCommand(ChattData.WHISPER);
+			}
 			
 			if(socket.isConnected()) {
 				ct.oos.writeObject(cd);
@@ -205,7 +221,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return lblNewLabel_2;
 	}
-	private JTextField getTmId() {
+	public JTextField getTmId() {
 		if (tmId == null) {
 			tmId = new JTextField();
 			tmId.setText("\u314B");
@@ -230,30 +246,34 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return tPw;
 	}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("\uC5F0\uACB0");
-			btnNewButton.addActionListener(new ActionListener() {
+	private JButton getConA() {
+		if (conA == null) {
+			conA = new JButton("\uC5F0\uACB0");
+			conA.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Thread t = new Thread(ClientFrame.this);
 					t.start();
+					conA.setEnabled(false);
+					exB.setEnabled(true);
 				}
 			});
-			btnNewButton.setBounds(316, 6, 65, 44);
+			conA.setBounds(316, 6, 65, 44);
 		}
-		return btnNewButton;
+		return conA;
 	}
-	private JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("Exit");
-			btnNewButton_1.addActionListener(new ActionListener() {
+	private JButton getExB() {
+		if (exB == null) {
+			exB = new JButton("Exit");
+			exB.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					logout();
+					conA.setEnabled(false);
+					exB.setEnabled(false);
 				}
 			});
-			btnNewButton_1.setBounds(386, 6, 58, 44);
+			exB.setBounds(386, 6, 58, 44);
 		}
-		return btnNewButton_1;
+		return exB;
 	}
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
@@ -281,11 +301,13 @@ public class ClientFrame extends JFrame implements Runnable{
 	private JScrollPane getScrollPane_1() {
 		if (scrollPane_1 == null) {
 			scrollPane_1 = new JScrollPane();
+			scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPane_1.setBounds(154, 82, 290, 173);
 			scrollPane_1.setViewportView(getTextPane());
 			scrollPane_1.setColumnHeaderView(getLblNewLabel_5());
 		}
 		return scrollPane_1;
+		
 	}
 	public JTextPane getTextPane() {
 		if (textPane == null) {
@@ -328,6 +350,7 @@ public class ClientFrame extends JFrame implements Runnable{
 				public void keyReleased(KeyEvent e) {
 					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 						send();
+						message.setText("");
 					}
 				}
 			});
@@ -342,6 +365,7 @@ public class ClientFrame extends JFrame implements Runnable{
 			btnNewButton_3.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					send();
+					message.setText("");
 				}
 			});
 			btnNewButton_3.setBounds(379, 293, 65, 23);

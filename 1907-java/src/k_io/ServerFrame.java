@@ -42,8 +42,8 @@ public class ServerFrame extends JFrame implements Runnable{
 	private JTextField textField;
 	private JLabel lblNewLabel_1;
 	private JTextField port;
-	private JButton btnNewButton;
-	private JButton btnNewButton_1;
+	private JButton startB;
+	private JButton stopB;
 	private JScrollPane scrollPane;
 	private JList list;
 	private JLabel lblNewLabel_2;
@@ -91,8 +91,8 @@ public class ServerFrame extends JFrame implements Runnable{
 		contentPane.add(getTextField());
 		contentPane.add(getLblNewLabel_1());
 		contentPane.add(getPort());
-		contentPane.add(getBtnNewButton());
-		contentPane.add(getBtnNewButton_1());
+		contentPane.add(getStartB());
+		contentPane.add(getStopB());
 		contentPane.add(getScrollPane());
 		contentPane.add(getScrollPane_1());
 		contentPane.add(getBtnNewButton_2());
@@ -133,7 +133,12 @@ public class ServerFrame extends JFrame implements Runnable{
 		cd.setmId("우엉");
 		cd.setCommand(ChattData.MESSAGE);
 		cd.setMessage(message.getText());
-		sendAll(cd);
+		if(comboBox.getSelectedIndex()==0) {
+			sendAll(cd);
+		}else {
+			int[] indexs = getList().getSelectedIndices();
+			sendAll(cd, indexs);
+		}
 	}
 	
 	public void sendAll(ChattData cd) {
@@ -145,9 +150,15 @@ public class ServerFrame extends JFrame implements Runnable{
 			}
 		}
 	}
-	
-	public void sendAll(int[] to) { // 귓속말
-		
+	public void sendAll(ChattData cd, int[] to) { // 귓속말
+		for(int i=0; i<to.length; i++) {
+			ServerThread st = clients.get(to[i]); // to라고하는 배열이 가지고 있는 값
+			try {
+				st.oos.writeObject(cd);
+				st.oos.flush();
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 	/*/
@@ -211,30 +222,34 @@ public class ServerFrame extends JFrame implements Runnable{
 		}
 		return port;
 	}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("\uC2DC\uC791");
-			btnNewButton.addActionListener(new ActionListener() {
+	private JButton getStartB() {
+		if (startB == null) {
+			startB = new JButton("\uC2DC\uC791");
+			startB.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Thread t = new Thread(ServerFrame.this); // this만 선언하게 되면 위에 있는 new ActionListener()를 상속받기때문에
 					t.start();                               // ServerFrame.this로 선언
+					startB.setEnabled(false);
+					stopB.setEnabled(true);
 				}
 			});
-			btnNewButton.setBounds(294, 6, 71, 23);
+			startB.setBounds(294, 6, 71, 23);
 		}
-		return btnNewButton;
+		return startB;
 	}
-	private JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("\uC885\uB8CC");
-			btnNewButton_1.addActionListener(new ActionListener() {
+	private JButton getStopB() {
+		if (stopB == null) {
+			stopB = new JButton("\uC885\uB8CC");
+			stopB.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					serverStop();
+					startB.setEnabled(true);
+					stopB.setEnabled(false);
 				}
 			});
-			btnNewButton_1.setBounds(377, 6, 71, 23);
+			stopB.setBounds(377, 6, 71, 23);
 		}
-		return btnNewButton_1;
+		return stopB;
 	}
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
@@ -283,6 +298,24 @@ public class ServerFrame extends JFrame implements Runnable{
 	private JButton getBtnNewButton_2() {
 		if (btnNewButton_2 == null) {
 			btnNewButton_2 = new JButton("\uAC15\uD1F4");
+			btnNewButton_2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Object[] index = getList().getSelectedValues();
+					ChattData cd = new ChattData();
+					cd.setCommand(ChattData.GETOUT);
+					cd.setmId("으핳");
+					
+					List<String> users = new ArrayList<String>();
+					for(int i=0; i<index.length; i++) {
+						users.add((String)index[i]);
+					}
+					cd.setUsers(users);
+					sendAll(cd);
+					ClientFrame cf = new ClientFrame();
+					cf.conA.setEnabled(false);
+					cf.exB.setEnabled(false);
+				}
+			});
 			btnNewButton_2.setBounds(12, 228, 63, 23);
 		}
 		return btnNewButton_2;
@@ -290,6 +323,11 @@ public class ServerFrame extends JFrame implements Runnable{
 	private JButton getBtnNewButton_3() {
 		if (btnNewButton_3 == null) {
 			btnNewButton_3 = new JButton("\uD574\uC81C");
+			btnNewButton_3.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					getList().clearSelection();
+				}
+			});
 			btnNewButton_3.setBounds(75, 228, 63, 23);
 		}
 		return btnNewButton_3;
@@ -311,6 +349,7 @@ public class ServerFrame extends JFrame implements Runnable{
 				public void keyReleased(KeyEvent e) {
 					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 						send();
+						message.setText("");
 					}
 				}
 			});
@@ -324,7 +363,8 @@ public class ServerFrame extends JFrame implements Runnable{
 			btnNewButton_4 = new JButton("\uC804\uC1A1");
 			btnNewButton_4.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					send();
+						send();
+						message.setText("");
 				}
 			});
 			btnNewButton_4.setBounds(389, 260, 67, 23);
