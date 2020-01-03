@@ -30,6 +30,7 @@ public class FileServer extends JFrame implements Runnable{
 	List<FileTransferReceive> files = new ArrayList<FileTransferReceive>();
 	boolean threadFlag = true;
 	ServerSocket server;
+	FileTransferReceive st;
 	private JPanel contentPane;
 	private JMenuBar menuBar;
 	private JMenu mnNewMenu;
@@ -102,7 +103,7 @@ public class FileServer extends JFrame implements Runnable{
 					}
 					
 					//socket, file, filesize를 넘겨줘야함
-					FileTransferReceive st = new FileTransferReceive(FileServer.port, data.fileName.get(i), data.fileSize.get(i)); 
+					st = new FileTransferReceive(FileServer.port, data.fileName.get(i), data.fileSize.get(i), panel); 
 					files.add(st);
 					panel.add(st);
 					
@@ -115,11 +116,22 @@ public class FileServer extends JFrame implements Runnable{
 				ois.close();
 				oos.close();
 			} catch (Exception e) {
-				
 			}
 		}
 	}
 
+	public void serverStop() {
+		files.clear();
+		files = new ArrayList<FileTransferReceive>();
+		
+		try {
+			server.close();
+			server=null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private JMenuBar getMenuBar_1() {
 		if (menuBar == null) {
 			menuBar = new JMenuBar();
@@ -143,6 +155,7 @@ public class FileServer extends JFrame implements Runnable{
 				public void actionPerformed(ActionEvent e) {
 					Thread t = new Thread(FileServer.this);
 					t.start();
+					
 				}
 			});
 		}
@@ -153,7 +166,8 @@ public class FileServer extends JFrame implements Runnable{
 			mntmNewMenuItem_1 = new JMenuItem("\uC11C\uBC84\uC911\uC9C0");
 			mntmNewMenuItem_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+					serverStop();
+					textArea.setText("서버종료");
 				}
 			});
 		}

@@ -17,6 +17,7 @@ public class FileTransferReceive extends JPanel implements Runnable{
 	InputStream is;
 	Socket socket;
 	int port;
+	JPanel panel;
 	
 	private JLabel fileName;
 	private JProgressBar progressBar;
@@ -34,10 +35,11 @@ public class FileTransferReceive extends JPanel implements Runnable{
 
 	}
 	
-	public FileTransferReceive(int port, String file, long fileSize) {
+	public FileTransferReceive(int port, String file, long fileSize, JPanel panel) {
 		this();
 		this.port=port;
 		this.fileSize = fileSize;
+		this.panel=panel;
 		getFileName().setText(file);
 		status.setText("0/"+fileSize);
 		

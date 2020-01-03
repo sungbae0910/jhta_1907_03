@@ -34,7 +34,6 @@ public class FileClient extends JFrame {
 	private JScrollPane scrollPane;
 	private JPanel panel_1;
 	private JTextField tIp;
-	private JButton btnNewButton_2;
 
 	/**
 	 * Launch the application.
@@ -128,7 +127,6 @@ public class FileClient extends JFrame {
 		if (panel == null) {
 			panel = new JPanel();
 			panel.add(getTIp());
-			panel.add(getBtnNewButton_2());
 			panel.add(getBtnNewButton());
 			panel.add(getBtnNewButton_1());
 		}
@@ -177,16 +175,5 @@ public class FileClient extends JFrame {
 			tIp.setColumns(10);
 		}
 		return tIp;
-	}
-	private JButton getBtnNewButton_2() {
-		if (btnNewButton_2 == null) {
-			btnNewButton_2 = new JButton("\uC11C\uBC84 \uC5F0\uACB0");
-			btnNewButton_2.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					
-				}
-			});
-		}
-		return btnNewButton_2;
 	}
 }
