@@ -83,6 +83,15 @@ public class MemberDelete extends JInternalFrame {
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {
 			btnNewButton = new JButton("\uAC80\uC0C9");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					MemberDao dao = new MemberDao();
+					String find = textField.getText();
+					MemberVo mv = dao.uSelect(find);
+					
+					textArea.setText(mv.toString());
+				}
+			});
 			btnNewButton.setBounds(194, 44, 84, 23);
 		}
 		return btnNewButton;
