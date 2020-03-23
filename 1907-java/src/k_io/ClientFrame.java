@@ -1,6 +1,11 @@
 package k_io;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,19 +21,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.ScrollPaneConstants;
 
 public class ClientFrame extends JFrame implements Runnable{
 
@@ -291,6 +288,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return list;
 	}
+	
 	private JLabel getLblNewLabel_4() {
 		if (lblNewLabel_4 == null) {
 			lblNewLabel_4 = new JLabel("\uC811\uC18D\uC790");
@@ -298,6 +296,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return lblNewLabel_4;
 	}
+	
 	private JScrollPane getScrollPane_1() {
 		if (scrollPane_1 == null) {
 			scrollPane_1 = new JScrollPane();
@@ -307,8 +306,8 @@ public class ClientFrame extends JFrame implements Runnable{
 			scrollPane_1.setColumnHeaderView(getLblNewLabel_5());
 		}
 		return scrollPane_1;
-		
 	}
+	
 	public JTextPane getTextPane() {
 		if (textPane == null) {
 			textPane = new JTextPane();
@@ -319,6 +318,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return textPane;
 	}
+	
 	private JLabel getLblNewLabel_5() {
 		if (lblNewLabel_5 == null) {
 			lblNewLabel_5 = new JLabel("Message");
@@ -326,6 +326,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return lblNewLabel_5;
 	}
+	
 	private JButton getBtnNewButton_2() {
 		if (btnNewButton_2 == null) {
 			btnNewButton_2 = new JButton("\uD574\uC81C");
@@ -333,6 +334,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return btnNewButton_2;
 	}
+	
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox();
@@ -342,6 +344,7 @@ public class ClientFrame extends JFrame implements Runnable{
 		}
 		return comboBox;
 	}
+	
 	private JTextField getMessage() {
 		if (message == null) {
 			message = new JTextField();

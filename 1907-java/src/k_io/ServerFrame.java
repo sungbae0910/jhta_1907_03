@@ -379,5 +379,4 @@ public class ServerFrame extends JFrame implements Runnable{
 		return lblNewLabel_3;
 	}
 
-
 }
